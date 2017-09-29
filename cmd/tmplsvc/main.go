@@ -3,7 +3,9 @@ package main
 import (
 	"flag"
 	"github.com/kristofferingemansson/go-service-template/http"
+	"github.com/kristofferingemansson/go-service-template/inmem"
 	"github.com/kristofferingemansson/go-service-template/pkg"
+	"github.com/kristofferingemansson/go-service-template/quote"
 )
 
 func main() {
@@ -17,10 +19,13 @@ func main() {
 	var errors = make(chan error)
 	logger := pkg.StdLogger
 
+	quoteRepository := inmem.NewQuoteRepository()
+	quoteService := quote.NewService(quoteRepository)
+
 	go func() {
 		staticHandler := http.NewStaticHandler(logger, *webroot)
-		apiHandler := http.NewAPIHandler(logger)
-		wsHandler := http.NewWsHandler(logger)
+		apiHandler := http.NewAPIHandler(logger, quoteService)
+		wsHandler := http.NewWsHandler(logger, quoteService)
 
 		server := http.NewServer(logger)
 		errors <- server.Listen(*addr, staticHandler, apiHandler, wsHandler)

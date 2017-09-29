@@ -5,5 +5,22 @@
 </head>
 <body>
     Hello world!
+    <div id="ajax-target"></div>
+    <div id="ws-target"></div>
+    <script>
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/api/quote");
+        xhr.onload = function() {
+            var data = JSON.parse(xhr.responseText);
+            document.getElementById("ajax-target").innerText = data.quote;
+        };
+        xhr.send();
+
+        var ws = new WebSocket("ws://" + window.location.host + "/ws");
+        ws.onmessage = function(event) {
+            var data = JSON.parse(event.data);
+            document.getElementById("ws-target").innerText = data.quote;
+        };
+    </script>
 </body>
 </html>
