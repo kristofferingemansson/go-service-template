@@ -1,0 +1,14 @@
+syntax = "proto3";
+package grpc;
+
+service Foo {
+    rpc GetFoo(FooRequest) returns (FooResponse) {}
+}
+
+message FooRequest {
+}
+
+message FooResponse {
+    string name = 1;
+}
+
